@@ -5,6 +5,12 @@
     </a>
 </p>
 
+<p align="center">
+     <a href="https://github.com/ben-n93/geojson-shave/actions/workflows/tests.yml"><img src="https://github.com/ben-n93/geojson-shave/actions/workflows/tests.yml/badge.svg" alt="Testing"></a>
+     <a href="https://img.shields.io/pypi/l/geojson-shave"><img src="https://img.shields.io/pypi/l/geojson-shave" alt="License"></a>
+     <a href="https://pypi.org/project/geojson-shave/"><img src="https://img.shields.io/pypi/pyversions/geojson-shave" alt="versions"></a>
+</p>
+
 ---
 
 geojson-shave reduces the size of GeoJSON files by:
