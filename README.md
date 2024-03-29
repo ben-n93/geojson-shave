@@ -22,6 +22,12 @@ $ pip install geojson-shave
 
 ## Usage
 
+<p align="center">
+    <a href="https://pypi.python.org">
+        <img src="https://ben-nour.com/images/demo.gif" alt="GeoJSON-shave-demo">
+    </a>
+</p>
+
 Simply pass the file path of your GeoJSON file and it will truncuate the coordinates to 5 decimal places, outputing to the current working directory:
 
 ```
