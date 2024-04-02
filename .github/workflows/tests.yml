@@ -20,10 +20,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -U pip
-          pip install -U alive-progress humanize
+           pip install -U alive-progress humanize coverage
       - name: Tests
         run: |
-          python -m tests.test_logic
+          coverage run -m tests.test_logic
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
