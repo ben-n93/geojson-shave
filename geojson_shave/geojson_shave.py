@@ -4,7 +4,6 @@
 import argparse
 import json
 import pathlib
-import re
 
 from alive_progress import alive_bar
 import humanize
@@ -98,7 +97,7 @@ def _create_coordinates(coordinates, precision):
         if isinstance(item, list):
             new_coordinates.append(_create_coordinates(item, precision))
         else:
-            item = re.search(rf"[\-]?[0-9]+\.[0-9]{{0,{precision}}}", str(item)).group()
+            item = round(item, precision)
             new_coordinates.append(float(item))
     return new_coordinates
 
