@@ -2,6 +2,7 @@
 """
 
 import argparse
+from contextlib import suppress
 import json
 import pathlib
 
@@ -140,7 +141,9 @@ def _process_features(geojson, precision, geometry_to_include, nullify_property)
                 output_geojson["features"].append(feature)
                 if nullify_property:
                     output_geojson["features"][index]["properties"] = {}
-                try:
+                with suppress(
+                    TypeError
+                ):  # Feature's "geometry" member has a null value.
                     if (geo_type := feature["geometry"]["type"]) in geometry_to_include:
                         if geo_type == "GeometryCollection":
                             output_geojson["features"][index]["geometry"] = (
@@ -155,9 +158,6 @@ def _process_features(geojson, precision, geometry_to_include, nullify_property)
                             output_geojson["features"][index]["geometry"][
                                 "coordinates"
                             ] = new_coordinates
-                except TypeError:  # Feature's "geometry" member has a null value.
-                    progress_bar()
-                    continue
                 progress_bar()
 
         else:  # Only one Feature.
