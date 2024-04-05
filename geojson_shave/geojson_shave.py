@@ -127,7 +127,7 @@ def _process_features(geojson, precision, geometry_to_include, nullify_property)
             output_geojson = {"type": "Feature"}
             length = 1
         else:
-            raise SystemError("Error: there are no Feature objects in this file.")
+            raise RuntimeError("Error: there are no Feature objects in this file.")
     else:
         output_geojson = {"type": "FeatureCollection", "features": []}
         length = len(total_features)
