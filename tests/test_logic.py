@@ -4,10 +4,12 @@ import os
 import unittest
 import sys
 
-from geojson_shave.geojson_shave import (_create_coordinates,
- _process_geometry_collection,
-_process_features, 
-GEOMETRY_OBJECTS)
+from geojson_shave.geojson_shave import (
+    _create_coordinates,
+    _process_geometry_collection,
+    _process_features,
+    GEOMETRY_OBJECTS,
+)
 
 
 class TestCreateCoordinates(unittest.TestCase):
@@ -490,7 +492,7 @@ class TestProcessFeatures(unittest.TestCase):
     def test_empty_gson_file(self):
         """Test that an exception is raised when an empty
         GeoJSON file is passed."""
-        with self.assertRaises(SystemError):
+        with self.assertRaises(RuntimeError):
             _process_features(self.blank_feature_collection, 3, ["Point"], False)
 
     def test_properties_nullified(self):
