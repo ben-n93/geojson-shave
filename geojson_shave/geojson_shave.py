@@ -128,7 +128,7 @@ def _process_features(geojson, precision, geometry_to_include, nullify_property)
             output_geojson = {"type": "Feature"}
             length = 1
         else:
-            raise RuntimeError("Error: there are no Feature objects in this file.")
+            raise ValueError("Error: there are no Feature objects in this file.")
     else:
         output_geojson = {"type": "FeatureCollection", "features": []}
         length = len(total_features)
@@ -187,16 +187,14 @@ def main():
 
     if args.decimal_points < 0:
         raise ValueError(
-            """Please only pass a positive number to the
-        decimal argument."""
+            """Please only pass a positive number to the decimal argument."""
         )
-
     # Process input file.
     with open(args.input.name, "r") as input_file:
         try:
             input_geojson = json.load(input_file)
         except json.decoder.JSONDecodeError as e:
-            raise SystemError("Error: please provide a valid GeoJSON file.") from e
+            raise ValueError("Error: please provide a valid GeoJSON file.") from e
     output_geojson = _process_features(
         input_geojson, args.decimal_points, args.geometry_object, args.properties
     )
