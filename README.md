@@ -20,7 +20,7 @@ geojson-shave reduces the size of GeoJSON files by:
 - Eliminating unnecessary whitespace.
 - (Optionally) replacing the properties key's value with null/empty dictionary.
 
-This tool assumes that your GeoJSON file confirms to the [RFC 7946](https://datatracker.ietf.org/doc/html/rfc7946).
+This tool assumes that your GeoJSON file conforms to the [RFC 7946](https://datatracker.ietf.org/doc/html/rfc7946).
 
 Please be aware that when you use fewer decimal places you can lose some accuracy. _"The fifth decimal place is worth up to 1.1 m: it distinguish trees from each other"_ - read more [here](https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude).
 
