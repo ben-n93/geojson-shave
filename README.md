@@ -43,7 +43,7 @@ Simply pass the file path of your GeoJSON file and it will truncuate the coordin
 $ geojson-shave roads.geoson
 ```
 
-Alterntatively you can specify the number of decimal points you want the coordiantes truncuated to:
+Alternatively you can specify the number of decimal points you want the coordinates truncuated to:
 
 ```
 $ geojson-shave roads.geojson -d 3
