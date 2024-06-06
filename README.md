@@ -16,7 +16,7 @@
 
 geojson-shave reduces the size of GeoJSON files by:
 
-- Truncating latitude/longitude coordinates to the specified decimal places.
+- Reducing the precision of latitude/longitude coordinates to the specified decimal places.
 - Eliminating unnecessary whitespace.
 - (Optionally) replacing the properties key's value with null/empty dictionary.
 
