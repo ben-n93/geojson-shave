@@ -10,6 +10,7 @@
      <a href="https://github.com/ben-n93/geojson-shave/blob/main/LICENSE"><img src="https://img.shields.io/pypi/l/geojson-shave" alt="License"></a>
     <a href="https://codecov.io/gh/ben-n93/geojson-shave" ><img src="https://codecov.io/gh/ben-n93/geojson-shave/graph/badge.svg?token=XUMK0D4J9X"/></a>
     <a href="https://pypi.org/project/geojson-shave/"><img src="https://img.shields.io/pypi/pyversions/geojson-shave" alt="versions"></a>
+    <a href="https://github.com/tmcw/awesome-geojson"><img src="https://awesome.re/mentioned-badge.svg" alt="awesome list badge"></a>
 </p>
 
 ---
