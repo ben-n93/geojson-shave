@@ -67,7 +67,3 @@ Output to a directory other than the current working directory:
 ```
 $ geojson-shave roads.geojson -o ../data/output.geojson
 ```
-
-## TODO
-
-- [ ] Add support for passing the URL of a hosted GeoJSON file to the tool.
