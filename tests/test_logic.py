@@ -1,17 +1,32 @@
 """Unit tests for geojson_shave.py"""
 
 import unittest
+from unittest import mock
 
 from geojson_shave.geojson_shave import (
-    _create_coordinates,
-    _process_geometry_collection,
-    _process_features,
+    create_coordinates,
+    process_geometry_collection,
+    process_features,
     GEOMETRY_OBJECTS,
+    main,
 )
 
 
+class TestMain(unittest.TestCase):
+    """Tests for the main function."""
+
+    @mock.patch("geojson_shave.geojson_shave.get_parser")
+    def test_decimal_points_less_than_zero(self, cli):
+        """Test that passing a negative number to the
+        decimal_points option raises a ValueError.
+        """
+        cli.return_value = mock.Mock(decimal_points=-1)
+        with self.assertRaises(ValueError):
+            main()
+
+
 class TestCreateCoordinates(unittest.TestCase):
-    """Tests for the _create_coordinates function.
+    """Tests for the create_coordinates function.
 
     Note that both LineStrings' and MultiPoints' coordinates both consist
     of an array of Points, hence only the LineString being tested.
@@ -92,7 +107,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 3
         geometry_coordinates = self.point["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_point_same_precision(self):
@@ -104,7 +119,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 6
         geometry_coordinates = self.point["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_point_precision_larger_than_places(self):
@@ -116,7 +131,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 50
         geometry_coordinates = self.point["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     # LineString.
@@ -130,7 +145,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 3
         geometry_coordinates = self.linestring["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_linestring_same_precision(self):
@@ -142,7 +157,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 6
         geometry_coordinates = self.linestring["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_linestring_precision_larger_than_places(self):
@@ -154,7 +169,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 50
         geometry_coordinates = self.linestring["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     # MultiLine strings.
@@ -167,7 +182,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 3
         geometry_coordinates = self.multilinestring["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_multilinestring_precision_larger_than_places(self):
@@ -179,7 +194,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 50
         geometry_coordinates = self.multilinestring["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_multilinestring_same_precision(self):
@@ -191,7 +206,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 6
         geometry_coordinates = self.multipolygon["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     # Polygon.
@@ -209,7 +224,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 3
         geometry_coordinates = self.polygon["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_polygon_precision_larger_than_places(self):
@@ -229,7 +244,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 50
         geometry_coordinates = self.polygon["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_polygon_same_precision(self):
@@ -249,7 +264,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 6
         geometry_coordinates = self.polygon["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     # MultiPolygon.
@@ -285,7 +300,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 3
         geometry_coordinates = self.multipolygon["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_multipolygon_precision_larger_than_places(self):
@@ -297,7 +312,7 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 50
         geometry_coordinates = self.multipolygon["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
     def test_multipolygon_same_precision(self):
@@ -309,12 +324,12 @@ class TestCreateCoordinates(unittest.TestCase):
         precision = 6
         geometry_coordinates = self.multipolygon["coordinates"]
         self.assertEqual(
-            _create_coordinates(geometry_coordinates, precision), expected_return_value
+            create_coordinates(geometry_coordinates, precision), expected_return_value
         )
 
 
 class TestProcessGeometryCollection(unittest.TestCase):
-    """Tests for the _process_geometry_collection function."""
+    """Tests for the process_geometry_collection function."""
 
     def setUp(self):
         self.geometry_collection = {
@@ -388,13 +403,13 @@ class TestProcessGeometryCollection(unittest.TestCase):
         geo_collection = self.geometry_collection
         precision = 3
         self.assertEqual(
-            _process_geometry_collection(geo_collection, precision),
+            process_geometry_collection(geo_collection, precision),
             expected_return_value,
         )
 
 
 class TestProcessFeatures(unittest.TestCase):
-    """Tests for the _process_features function."""
+    """Tests for the process_features function."""
 
     def setUp(self):
         self.feature_collection = {
@@ -464,7 +479,7 @@ class TestProcessFeatures(unittest.TestCase):
         }
 
         self.assertEqual(
-            _process_features(
+            process_features(
                 self.feature_collection, precision, geometry_to_include, False
             ),
             expected_return_value,
@@ -483,7 +498,7 @@ class TestProcessFeatures(unittest.TestCase):
         }
 
         self.assertEqual(
-            _process_features(self.feature, precision, geometry_to_include, False),
+            process_features(self.feature, precision, geometry_to_include, False),
             expected_return_value,
         )
 
@@ -491,7 +506,7 @@ class TestProcessFeatures(unittest.TestCase):
         """Test that an exception is raised when an empty
         GeoJSON file is passed."""
         with self.assertRaises(ValueError):
-            _process_features(self.blank_feature_collection, 3, ["Point"], False)
+            process_features(self.blank_feature_collection, 3, ["Point"], False)
 
     def test_properties_nullified(self):
         """Test that the properties key returns a null/empty dictionary."""
@@ -524,7 +539,7 @@ class TestProcessFeatures(unittest.TestCase):
         }
 
         self.assertEqual(
-            _process_features(
+            process_features(
                 self.feature_collection, precision, GEOMETRY_OBJECTS, True
             ),
             expected_return_value,
@@ -562,7 +577,7 @@ class TestProcessFeatures(unittest.TestCase):
         }
 
         self.assertEqual(
-            _process_features(
+            process_features(
                 self.feature_collection, precision, geometry_to_include, False
             ),
             expected_return_value,

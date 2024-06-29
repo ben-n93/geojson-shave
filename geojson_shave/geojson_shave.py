@@ -88,29 +88,30 @@ def get_parser():
         nargs="+",
     )
 
-    return parser
+    args = parser.parse_args()
+    return args
 
 
-def _create_coordinates(coordinates, precision):
+def create_coordinates(coordinates, precision):
     """Create truncuated coordinates."""
     new_coordinates = []
     for item in coordinates:
         if isinstance(item, list):
-            new_coordinates.append(_create_coordinates(item, precision))
+            new_coordinates.append(create_coordinates(item, precision))
         else:
             item = round(item, precision)
             new_coordinates.append(float(item))
     return new_coordinates
 
 
-def _process_geometry_collection(geometry_collection, precision):
+def process_geometry_collection(geometry_collection, precision):
     """Parse and truncuate the coordinates of each geometry
     object nested within a geometry collection."""
     new_geometry_collection = {"type": "GeometryCollection"}
     processed_geometry_objects = []
     for geometry_object in geometry_collection["geometries"]:
         object_type = geometry_object["type"]
-        new_coordinates = _create_coordinates(geometry_object["coordinates"], precision)
+        new_coordinates = create_coordinates(geometry_object["coordinates"], precision)
         processed_geometry_objects.append(
             {"type": object_type, "coordinates": new_coordinates}
         )
@@ -119,7 +120,7 @@ def _process_geometry_collection(geometry_collection, precision):
     return new_geometry_collection
 
 
-def _process_features(geojson, precision, geometry_to_include, nullify_property):
+def process_features(geojson, precision, geometry_to_include, nullify_property):
     """Process Feature objects, truncuating coordinates and/or replacing
     the properties member with a blank value."""
     # Create new GeoJSON object.
@@ -147,12 +148,12 @@ def _process_features(geojson, precision, geometry_to_include, nullify_property)
                     if (geo_type := feature["geometry"]["type"]) in geometry_to_include:
                         if geo_type == "GeometryCollection":
                             output_geojson["features"][index]["geometry"] = (
-                                _process_geometry_collection(
+                                process_geometry_collection(
                                     feature["geometry"], precision
                                 )
                             )
                         else:
-                            new_coordinates = _create_coordinates(
+                            new_coordinates = create_coordinates(
                                 feature["geometry"]["coordinates"], precision
                             )
                             output_geojson["features"][index]["geometry"][
@@ -162,7 +163,7 @@ def _process_features(geojson, precision, geometry_to_include, nullify_property)
 
         else:  # Only one Feature.
             if geojson["geometry"]["type"] in geometry_to_include:
-                new_coordinates = _create_coordinates(
+                new_coordinates = create_coordinates(
                     geojson["geometry"]["coordinates"], precision
                 )
                 output_geojson["geometry"] = {
@@ -182,8 +183,7 @@ def _process_features(geojson, precision, geometry_to_include, nullify_property)
 
 def main():
     """Launch the command-line tool."""
-    parser = get_parser()
-    args = parser.parse_args()
+    args = get_parser()
 
     if args.decimal_points < 0:
         raise ValueError(
@@ -195,7 +195,7 @@ def main():
             input_geojson = json.load(input_file)
         except json.decoder.JSONDecodeError as e:
             raise ValueError("Error: please provide a valid GeoJSON file.") from e
-    output_geojson = _process_features(
+    output_geojson = process_features(
         input_geojson, args.decimal_points, args.geometry_object, args.properties
     )
 
