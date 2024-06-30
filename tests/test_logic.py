@@ -418,7 +418,7 @@ class TestProcessFeatures(unittest.TestCase):
                 {
                     "type": "Feature",
                     "geometry": {"type": "Point", "coordinates": [0.123456, 0.123456]},
-                    "properties": {"name": "Feature 1"},
+                    "properties": {"id": 1, "name": "Feature 1"},
                 },
                 {
                     "type": "Feature",
@@ -443,7 +443,7 @@ class TestProcessFeatures(unittest.TestCase):
         self.feature = {
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [100.123456, -0.123456]},
-            "properties": {"name": "Example Point"},
+            "properties": {"id": 1, "name": "Example Point"},
         }
 
     def test_feature_collection_truncuation(self):
@@ -457,7 +457,7 @@ class TestProcessFeatures(unittest.TestCase):
                 {
                     "type": "Feature",
                     "geometry": {"type": "Point", "coordinates": [0.123, 0.123]},
-                    "properties": {"name": "Feature 1"},
+                    "properties": {"id": 1, "name": "Feature 1"},
                 },
                 {
                     "type": "Feature",
@@ -480,7 +480,7 @@ class TestProcessFeatures(unittest.TestCase):
 
         self.assertEqual(
             process_features(
-                self.feature_collection, precision, geometry_to_include, False
+                self.feature_collection, precision, geometry_to_include, None
             ),
             expected_return_value,
         )
@@ -494,11 +494,11 @@ class TestProcessFeatures(unittest.TestCase):
         expected_return_value = {
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [100.123, -0.123]},
-            "properties": {"name": "Example Point"},
+            "properties": {"id": 1, "name": "Example Point"},
         }
 
         self.assertEqual(
-            process_features(self.feature, precision, geometry_to_include, False),
+            process_features(self.feature, precision, geometry_to_include, None),
             expected_return_value,
         )
 
@@ -506,7 +506,7 @@ class TestProcessFeatures(unittest.TestCase):
         """Test that an exception is raised when an empty
         GeoJSON file is passed."""
         with self.assertRaises(ValueError):
-            process_features(self.blank_feature_collection, 3, ["Point"], False)
+            process_features(self.blank_feature_collection, 3, ["Point"], None)
 
     def test_properties_nullified(self):
         """Test that the properties key returns a null/empty dictionary."""
@@ -540,7 +540,44 @@ class TestProcessFeatures(unittest.TestCase):
 
         self.assertEqual(
             process_features(
-                self.feature_collection, precision, GEOMETRY_OBJECTS, True
+                self.feature_collection, precision, GEOMETRY_OBJECTS, []
+            ),
+            expected_return_value,
+        )
+
+    def test_keep_properties(self):
+        """Test that the properties key returns a null/empty dictionary."""
+        precision = 3
+        expected_return_value = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": [0.123, 0.123]},
+                    "properties": {"id": 1},
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [5.123, 5.123],
+                                [15.123, 5.123],
+                                [15.123, 15.123],
+                                [5.123, 15.123],
+                                [5.123, 5.123],
+                            ]
+                        ],
+                    },
+                    "properties": {},
+                },
+            ],
+        }
+
+        self.assertEqual(
+            process_features(
+                self.feature_collection, precision, GEOMETRY_OBJECTS, ['id', 'nonexist', '']
             ),
             expected_return_value,
         )
@@ -555,7 +592,7 @@ class TestProcessFeatures(unittest.TestCase):
                 {
                     "type": "Feature",
                     "geometry": {"type": "Point", "coordinates": [0.123456, 0.123456]},
-                    "properties": {"name": "Feature 1"},
+                    "properties": {"id": 1, "name": "Feature 1"},
                 },
                 {
                     "type": "Feature",
@@ -578,7 +615,7 @@ class TestProcessFeatures(unittest.TestCase):
 
         self.assertEqual(
             process_features(
-                self.feature_collection, precision, geometry_to_include, False
+                self.feature_collection, precision, geometry_to_include, None
             ),
             expected_return_value,
         )
