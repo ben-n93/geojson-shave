@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geojson-shave"
+description = "A command-line tool for reducing the size of GeoJSON files."
+authors = [
+    { name = "Ben Nour", email = "hello@ben-nour.com" }
+]
+version = "0.2.0"
+dependencies = [
+    "alive-progress~=3.1.5",
+    "humanize~=4.9.0"
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+keywords = ["geojson"]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.8"
+
+[project.urls]
+homepage = "https://github.com/ben-n93/geojson-shave"
+repository = "https://github.com/ben-n93/geojson-shave"
+
+[project.scripts]
+geojson-shave = "geojson_shave.geojson_shave:main"
