@@ -76,6 +76,15 @@ def get_parser():
     )
 
     parser.add_argument(
+        "-kp",
+        "--keep_properties",
+        help="Comma-separated list of property keys. Delete all others.",
+        required=False,
+        type=lambda s: s.split(',') if s else []
+    )
+
+
+    parser.add_argument(
         "-g",
         "--geometry_object",
         type=str,
@@ -120,7 +129,7 @@ def process_geometry_collection(geometry_collection, precision):
     return new_geometry_collection
 
 
-def process_features(geojson, precision, geometry_to_include, nullify_property):
+def process_features(geojson, precision, geometry_to_include, keep_properties):
     """Process Feature objects, truncuating coordinates and/or replacing
     the properties member with a blank value."""
     # Create new GeoJSON object.
@@ -140,8 +149,13 @@ def process_features(geojson, precision, geometry_to_include, nullify_property):
         if geojson["type"] == "FeatureCollection":
             for index, feature in enumerate(geojson["features"]):
                 output_geojson["features"].append(feature)
-                if nullify_property:
-                    output_geojson["features"][index]["properties"] = {}
+                if keep_properties is not None:
+                    if not keep_properties:
+                        output_geojson["features"][index]["properties"] = {}
+                    else:
+                        for key in output_geojson["features"][index]["properties"].copy():
+                            if key not in keep_properties:
+                                del output_geojson["features"][index]["properties"][key]
                 with suppress(
                     TypeError
                 ):  # Feature's "geometry" member has a null value.
@@ -170,8 +184,13 @@ def process_features(geojson, precision, geometry_to_include, nullify_property):
                     "type": geojson["geometry"]["type"],
                     "coordinates": new_coordinates,
                 }
-                if nullify_property:
-                    output_geojson["properties"] = {}
+                if keep_properties is not None:
+                    if not keep_properties:
+                        output_geojson["properties"] = {}
+                    else:
+                        for key in output_geojson["features"][index]["properties"].copy():
+                            if key not in keep_properties:
+                                del output_geojson["features"][index]["properties"][key]
                 progress_bar()
 
     # Including any non-standard (RFC) top-level keys in the output file.
@@ -189,6 +208,10 @@ def main():
         raise ValueError(
             """Please only pass a positive number to the decimal argument."""
         )
+
+    if args.properties is True:
+        args.keep_properties = []
+
     # Process input file.
     with open(args.input.name, "r") as input_file:
         try:
@@ -196,7 +219,7 @@ def main():
         except json.decoder.JSONDecodeError as e:
             raise ValueError("Error: please provide a valid GeoJSON file.") from e
     output_geojson = process_features(
-        input_geojson, args.decimal_points, args.geometry_object, args.properties
+        input_geojson, args.decimal_points, args.geometry_object, args.keep_properties
     )
 
     # Write to output file.

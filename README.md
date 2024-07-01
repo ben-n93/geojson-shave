@@ -51,6 +51,7 @@ $ geojson-shave roads.geojson -d 3
 ```
 
 You can also specify if you only want certain Geometry object types in the file to be processed:
+
 ```
 $ geojson-shave roads.geojson -g LineString Polygon
 ```
@@ -63,7 +64,14 @@ And to reduce the file size even further you can nullify the property value of F
 $ geojson-shave roads.geojson -p
 ```
 
+Or select a positive list of properties to keep:
+
+```
+$ geojson-shave roads.geojson -kp id,name,level
+```
+
 Output to a directory other than the current working directory:
+
 ```
 $ geojson-shave roads.geojson -o ../data/output.geojson
 ```
